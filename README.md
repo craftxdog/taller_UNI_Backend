@@ -37,7 +37,7 @@ crud-api/
 
 | Campo     | Tipo     | Descripción                    |
 |-----------|----------|--------------------------------|
-| id        | Int      | ID autoincrementado (PK)       |
+| id        | String   | ID autoincrementado (PK)       |
 | nombre    | String   | Nombre del producto            |
 | costo     | Float    | Costo del producto             |
 | precio    | Float    | Precio de venta                |
