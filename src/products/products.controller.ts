@@ -1,5 +1,13 @@
-
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Post,
+  Body,
+  Patch,
+  Param,
+  Delete,
+  ParseUUIDPipe,
+} from '@nestjs/common';
 import { ProductsService } from './products.service';
 import { CreateProductDto } from './dto/create-product.dto';
 import { UpdateProductDto } from './dto/update-product.dto';
@@ -12,37 +20,61 @@ export class ProductsController {
   constructor(private readonly productsService: ProductsService) {}
 
   @Post()
-  @ApiOperation({ summary: 'Create product' })
-  @ApiResponse({ status: 201, description: 'The record has been successfully created.', type: ProductEntity })
+  @ApiOperation({ summary: 'Crear un producto nuevo' })
+  @ApiResponse({
+    status: 201,
+    description: 'Producto creado correctamente',
+    type: ProductEntity,
+  })
   create(@Body() createProductDto: CreateProductDto) {
     return this.productsService.create(createProductDto);
   }
 
   @Get()
-  @ApiOperation({ summary: 'Get all products' })
-  @ApiResponse({ status: 200, description: 'Return all products.', type: [ProductEntity] })
+  @ApiOperation({ summary: 'Obtener todos los productos' })
+  @ApiResponse({
+    status: 200,
+    description: 'Lista de productos',
+    type: [ProductEntity],
+  })
   findAll() {
     return this.productsService.findAll();
   }
 
   @Get(':id')
-  @ApiOperation({ summary: 'Get product by id' })
-  @ApiResponse({ status: 200, description: 'Return product by id.', type: ProductEntity })
-  findOne(@Param('id') id: string) {
-    return this.productsService.findOne(+id);
+  @ApiOperation({ summary: 'Obtener un producto por ID (UUID)' })
+  @ApiResponse({
+    status: 200,
+    description: 'Producto encontrado',
+    type: ProductEntity,
+  })
+  @ApiResponse({ status: 404, description: 'Producto no encontrado' })
+  findOne(@Param('id', ParseUUIDPipe) id: string) {
+    return this.productsService.findOne(id);
   }
 
   @Patch(':id')
-  @ApiOperation({ summary: 'Update product by id' })
-  @ApiResponse({ status: 200, description: 'The record has been successfully updated.', type: ProductEntity })
-  update(@Param('id') id: string, @Body() updateProductDto: UpdateProductDto) {
-    return this.productsService.update(+id, updateProductDto);
+  @ApiOperation({ summary: 'Actualizar producto por ID (UUID)' })
+  @ApiResponse({
+    status: 200,
+    description: 'Producto actualizado correctamente',
+    type: ProductEntity,
+  })
+  update(
+    @Param('id', ParseUUIDPipe) id: string,
+    @Body() updateProductDto: UpdateProductDto,
+  ) {
+    return this.productsService.update(id, updateProductDto);
   }
 
   @Delete(':id')
-  @ApiOperation({ summary: 'Delete product by id' })
-  @ApiResponse({ status: 200, description: 'The record has been successfully deleted.', type: ProductEntity })
-  remove(@Param('id') id: string) {
-    return this.productsService.remove(+id);
+  @ApiOperation({ summary: 'Eliminar producto por ID (UUID)' })
+  @ApiResponse({
+    status: 200,
+    description: 'Producto eliminado correctamente',
+    type: ProductEntity,
+  })
+  remove(@Param('id', ParseUUIDPipe) id: string) {
+    return this.productsService.remove(id);
   }
 }
